@@ -1,0 +1,47 @@
+---
+- name : demo on deployment
+  hosts : PROD
+  become : yes
+  vars :
+    username : kstom
+    kapp_path : /ksapp
+    tom_url : https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.78/bin/apache-tomcat-9.0.78.tar.gz
+    tom_webapp : /ksapp/apache-tomcat-9.0.78/webapps
+    war_url : http://13.232.82.192:8081/repository/maven-snapshots/com/ksapp/ks/1-SNAPSHOT/ks-1-20240223.122745-1.war
+    war_dest : /ksapp/apache-tomcat-9.0.78/webapps/ks.war
+  tasks :
+    - name : create an user for tomcat 
+      ansible.builtin.user:
+        user : "{{username}}"
+    - name : Create directory for tomcat
+      ansible.builtin.file:
+        path : "{{kapp_path}}"
+        owner : "{{username}}"
+        group : "{{username}}"
+        state : directory
+    - name : download tomacat 
+      ansible.builtin.unarchive:
+        src : "{{tom_url}}"
+        dest : "{{kapp_path}}"
+        remote_src : yes
+      become_user : "{{username}}"
+    - name : remove old artifacts from webapp directory
+      ansible.builtin.file:
+        state : "{{item}}"
+        path : "{{tom_webapp}}"
+        owner : "{{username}}"
+        group : "{{username}}"
+      loop :
+        - absent
+        - directory
+    - name : deploying war package
+      get_url:
+        url : "{{war_url}}"
+        dest : "{{war_dest}}"
+    - name : installing java
+      yum :
+        name : java
+        state : latest
+    - name : starting tomcat
+      shell : "nohup sh /ksapp/apache-tomcat-9.0.78/bin/shutdown.sh && nohup sh /ksapp/apache-tomcat-9.0.78/bin/startup.sh"
+        

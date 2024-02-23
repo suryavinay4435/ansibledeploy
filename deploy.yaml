@@ -5,10 +5,10 @@
   vars :
     username : kstom
     kapp_path : /ksapp
-    tom_url : https://repo1.maven.org/maven2/org/apache/tomcat/tomcat/8.0.36/tomcat-8.0.36.tar.gz
-    tom_webapp : /ksapp/apache-tomcat-8.0.36/webapps
+    tom_url : https://repo1.maven.org/maven2/org/apache/tomcat/tomcat/9.0.78/tomcat-9.0.78.tar.gz
+    tom_webapp : /ksapp/apache-tomcat-9.0.78/webapps
     war_url : http://13.232.82.192:8081/repository/maven-snapshots/com/ksapp/ks/1-SNAPSHOT/ks-1-20240223.122745-1.war
-    war_dest : /ksapp/apache-tomcat-8.0.36/webapps/ks.war
+    war_dest : /ksapp/apache-tomcat-9.0.78/webapps/ks.war
   tasks :
     - name : create an user for tomcat 
       ansible.builtin.user:
@@ -43,5 +43,5 @@
         name : java
         state : latest
     - name : starting tomcat
-      shell : "nohup sh /ksapp/apache-tomcat-8.0.36/bin/shutdown.sh && nohup sh /ksapp/apache-tomcat-8.0.36/bin/startup.sh"
+      shell : "nohup sh /ksapp/apache-tomcat-9.0.78/bin/shutdown.sh && nohup sh /ksapp/apache-tomcat-9.0.78/bin/startup.sh"
         
